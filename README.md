@@ -8,7 +8,13 @@ Using VMs to installtion for HA Cluster
 * No of Worker Nodes : 2 (1CPUs, 2GB RAM and running centos7)
 * No of LoadBalancer Node : 1 (1CPUs, 2GB and RAM running centos7)
 
-**Installing Kubeadm -- Installation should be done on all the nodes**
+Master Node1 IP: 192.168.30.5
+Master Node2 IP: 192.168.30.6
+Worker Node1 IP: 192.168.30.11
+Worker Node2 IP: 192.168.30.12
+LoadBalancer IP: 192.168.30.2
+
+## Installing Kubeadm -- Installation should be done on all the nodes
 
 **System Requirement**
 
@@ -124,7 +130,7 @@ sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 sudo systemctl enable --now kubelet
 ```
 
-**Cluster Installation :**
+## Cluster Installation
 
 **HA Control-Plane Installation -- Stacked ETCD**
 
@@ -243,8 +249,16 @@ To start using your cluster, you need to run the following as a regular user:
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
  
+**Step 5 - Create a CNI for POD networking** 
 
-**Step 5 -- Join the other master**
+Note : Run on control-plane node with non root user
+
+``
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+``
+Join the other master node using
+
+## Join the other master
 
 Note: Run as root
 
@@ -256,17 +270,8 @@ kubeadm join 192.168.30.2:6443 --token 9vr73a.a8uxyaju799qwdjv \
 ```
 apiserver-advertise-address=192.168.30.5 --> address of the current master node
 
-**Step 6 - Create a CNI for POD networking** 
 
-Note : Run on control-plane node with non root user
-
-``
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-``
-Join the other master node using
-
-
-**Step 7 -- Joint the worker nodes**
+## Join the worker nodes
 
 Note: Run as root
 
