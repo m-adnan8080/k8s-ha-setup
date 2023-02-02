@@ -8,11 +8,13 @@ Using VMs to installtion for HA Cluster
 * No of Worker Nodes : 2 (1CPUs, 2GB RAM and running centos7)
 * No of LoadBalancer Node : 1 (1CPUs, 2GB and RAM running centos7)
 
+```
 Master Node1 IP: 192.168.30.5
 Master Node2 IP: 192.168.30.6
 Worker Node1 IP: 192.168.30.11
 Worker Node2 IP: 192.168.30.12
 LoadBalancer IP: 192.168.30.2
+```
 
 ## Installing Kubeadm -- Installation should be done on all the nodes
 
