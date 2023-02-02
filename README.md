@@ -144,7 +144,7 @@ Install Nginx
 $sudo yum install epel-release
 $sudo yum install nginx
 ```
-Disable Selinux and reboot the server
+Disable Selinux on the loadbalancer server
 ```
 # Set SELinux in permissive mode (effectively disabling it)
 sudo setenforce 0
