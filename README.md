@@ -273,7 +273,7 @@ kubeadm join 192.168.30.2:6443 --token 9vr73a.a8uxyaju799qwdjv \
 --control-plane --certificate-key f8902e114ef118304e561c3ecd4d0b543adc226b7a07f675f56564185ffe0c07 \
 --apiserver-advertise-address=192.168.30.6 
 ```
-apiserver-advertise-address=192.168.30.5 --> address of the current master node
+apiserver-advertise-address=192.168.30.6 --> address of the current master node
 
 
 ## Join the worker nodes
