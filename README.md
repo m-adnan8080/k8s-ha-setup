@@ -2,7 +2,7 @@
 
 **VM Config :**
 
-Using VMs to installtion for HA Cluster
+Using VMs to install Kubernetes HA Cluster
 
 * No of Master Nodes : 2 (2CPUs, 2GB RAM and running centos7)
 * No of Worker Nodes : 2 (1CPUs, 2GB RAM and running centos7)
@@ -65,9 +65,9 @@ yum-config-manager --add-repo \
 Install docker ce
 ```
 yum update -y && yum install -y \
-  containerd.io-1.2.13 \
-  docker-ce-19.03.11 \
-  docker-ce-cli-19.03.11
+  containerd.io \
+  docker-ce \
+  docker-ce-cli
   ```
   Create directory for docker daemon
  ``` 
@@ -144,9 +144,9 @@ Install Nginx
 $sudo yum install epel-release
 $sudo yum install nginx
 ```
-Disable Selinux
+Disable Selinux and reboot the server
 ```
-SELINUX=disabled in the cat /etc/selinux/config and reboot the server
+SELINUX=disabled in the file /etc/selinux/config
 ```
 Start Nginx
 
@@ -175,11 +175,11 @@ vi /etc/nginx/tcp.conf.d/apiserver.conf
 ```
 stream {
         upstream apiserver_read {
-             server 192.168.30.5:6443;                     #--> control plane node 1 ip and kube-api port
-             server 192.168.30.6:6443;                     #--> control plane node 2 ip and kube-api port
+             server 192.168.30.5:6443;       #--> control plane node 1 ip and kube-api port
+             server 192.168.30.6:6443;       #--> control plane node 2 ip and kube-api port
         }
         server {
-                listen 6443;                               # --> port on which load balancer will listen
+                listen 6443;                 # --> port on which load balancer will listen
                 proxy_pass apiserver_read;
         }
 }
@@ -203,7 +203,9 @@ A connection refused error is expected because the apiserver is not yet running.
 
 **Step 2 -- Install kubeadm kubelet and kubectl on all the nodes please refer the kubeadm installation section.**
 
-**Step 3 -- Initialize any one of the control plane node.**
+## Initialize control plane node.
+**Step 1 -- Kubeadm init control plane node.**
+
 ```
 sudo kubeadm init --control-plane-endpoint "LOAD_BALANCER_DNS:LOAD_BALANCER_PORT" --upload-certs
 ```
@@ -211,7 +213,6 @@ sudo kubeadm init --control-plane-endpoint "LOAD_BALANCER_DNS:LOAD_BALANCER_PORT
 * The --control-plane-endpoint flag should be set to the address or DNS and port of the load balancer.
 * The --upload-certs flag is used to upload the certificates that should be shared across all the control-plane instances to the cluster. If instead, you prefer to copy certs across control-plane nodes manually or using automation tools, please remove this flag and refer to Manual certificate distribution section below
 * Some CNI network plugins require additional configuration, for example specifying the pod IP CIDR, while others do not. See the CNI network documentation. To add a pod CIDR pass the flag --pod-network-cidr, or if you are using a kubeadm configuration file set the podSubnet field under the networking object of ClusterConfiguration.
-
 
 
 ```
@@ -244,14 +245,14 @@ To start using your cluster, you need to run the following as a regular user:
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-**Step 4  - kubectl config**
+**Step 2  - kubectl config**
 ```
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
  
-**Step 5 - Create a CNI for POD networking** 
+**Step 3 - Create a CNI for POD networking** 
 
 Note : Run on control-plane node with non root user
 
